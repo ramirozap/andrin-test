@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Walter Beer Calc</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+    <style media="screen">
+    .top-buffer{
+        margin-top: 10px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1><strong>Improved</strong> Improved Walter Calculator</h1>
+      <div class="jumbotron">
+
+      <div class="form-inline row top-buffer">
+        <div class="form-group ">
+          <label for="price">Price of Walter:</label>
+          <div class="input-group col-sm-4">
+            <div class="input-group-addon">€</div>
+              <input id="price" name="price" class="form-control" type="text" value="0.53">
+          </div>
+
+                <label for="">per bottle (inc. tare)</label>
+
+
+          </div>
+        </div>
+        <div class="form-inline row top-buffer">
+          <div class="form-group">
+            <label for="money">I have </label>
+            <div class="input-group col-sm-4">
+              <div class="input-group-addon">€</div>
+              <input id="money" class="form-control" type="text" name="money">
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary top-buffer" onclick="calcIt(); return false;">Calculate</button><br>
+
+      </div>
+      <div id="iterations" class="">
+
+      </div>
+    </div>
+    <script type="text/javascript" src="module.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript">
+      var iterations = $("#iterations");
+      var calc = new WalterCalc.WalterCalculator();
+      var arr;
+      function calcIt(){
+        iterations.empty();
+        var money = $('#money').val();
+        var price = $('#price').val();
+        if (price < 0) {
+          $('#price').val(0);
+          price = 0;
+        }
+        calc.price = price;
+        arr = calc.calculate(money);
+        var totalBottles = 0;
+        if (arr[0] > 0) {
+          for (var i = 1; i < arr.length; i++) {
+            totalBottles += arr[i].bottles;
+            iterations.append("<div class='well well-sm col-sm-7'>\
+            <h4>Iteration #" + i+ ":</h4><br>\
+              You get: " + arr[i].bottles + " Walters<br>\
+              Cash remaining: " + arr[i].remainingCash.toFixed(2) + " €<br>\
+              You get: " + arr[i].totalTare.toFixed(2) + " for the tare.<br>\
+              Total: " + arr[i].finalCash.toFixed(2) + "<br>\
+              </div>");
+          }
+          iterations.append("<div class='well well-sm col-sm-7'>In total you get " + totalBottles + " Walters.<br>\
+          If you had " + (price - parseFloat(arr[arr.length - 1].finalCash)).toFixed(2) + " € more, you'd be able to buy one more beer!<br></div>");
+        }else {
+          iterations.append("<div class='well well-sm col-sm-7'><h2>" + arr[1]+ "</h2><div>");
+        }
+      }
+    </script>
+  </body>
+</html>
